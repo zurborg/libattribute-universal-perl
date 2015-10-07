@@ -28,3 +28,35 @@ sub import {
 }
 
 1;
+
+=head1 SYNOPSIS
+
+    package Disco;
+    
+    use Attribute::Universal Loud => 'CODE';
+    
+    sub ATTRIBUTE {
+        my ($package, $symbol, $referent, $attr, $data) = @_;
+        # See Attrbute::Handlers
+    }
+    
+    # Attribute is installed global
+    
+    sub Noise : Loud {
+        ...
+    }
+
+=head1 DESCRIPTION
+
+According to the example above, this module does just this on import:
+
+    sub UNIVERSAL::Load : ATTR(CODE) {
+        goto &Disco::ATTRIBUTE;
+    }
+
+Hint: the I<redefine> warning is still enabled.
+
+More than one attribute may be defined at import, with any allowed option:
+
+    use Attribute::Universal RealLoud => 'BEGIN,END', TooLoud => 'ANY,RAWDATA';
+
