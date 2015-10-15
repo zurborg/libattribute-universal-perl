@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 
 package Attribute::Universal;
 
-# ABSTRACT: Install attribute handlers directly into UNIVERSAL namespace
+# ABSTRACT: Install L<attribute handlers|Attribute::Handlers> directly into UNIVERSAL namespace
 
 use Attribute::Handlers 0.99;
 
@@ -37,7 +37,7 @@ sub import {
     
     sub ATTRIBUTE {
         my ($package, $symbol, $referent, $attr, $data) = @_;
-        # See Attrbute::Handlers
+        # See Attribute::Handlers
     }
     
     # Attribute is installed global
@@ -50,6 +50,8 @@ sub import {
 
 According to the example above, this module does just this on import:
 
+    use Attribute::Handlers;
+    
     sub UNIVERSAL::Load : ATTR(CODE) {
         goto &Disco::ATTRIBUTE;
     }
@@ -60,3 +62,4 @@ More than one attribute may be defined at import, with any allowed option:
 
     use Attribute::Universal RealLoud => 'BEGIN,END', TooLoud => 'ANY,RAWDATA';
 
+See L<Attributes::Handlers> for more information about attribute handlers.
