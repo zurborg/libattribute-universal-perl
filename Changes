@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.002 2015-10-16
  - fix documentation
  - new function to_hash
 
