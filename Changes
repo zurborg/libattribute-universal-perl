@@ -1,4 +1,6 @@
 {{$NEXT}}
+ - fix documentation
+ - new function to_hash
 
 0.001 2015-10-07
  - Initial release
