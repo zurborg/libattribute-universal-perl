@@ -235,3 +235,9 @@ More than one attribute may be defined at import, with any allowed option:
     use Attribute::Universal RealLoud => 'BEGIN,END', TooLoud => 'ANY,RAWDATA';
 
 See L<Attributes::Handlers> for more information about attribute handlers.
+
+=head1 COMPATIBILITY
+
+This module needs a minimum perl version of 5.16 - due to the magic on module import.
+
+
