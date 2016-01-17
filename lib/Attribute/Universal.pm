@@ -205,16 +205,16 @@ sub collect_by_referent {
 =head1 SYNOPSIS
 
     package Disco;
-    
+
     use Attribute::Universal Loud => 'CODE';
-    
+
     sub ATTRIBUTE {
         my ($package, $symbol, $referent, $attr, $data) = @_;
         # See Attribute::Handlers
     }
-    
+
     # Attribute is installed global
-    
+
     sub Noise : Loud {
         ...
     }
@@ -224,7 +224,7 @@ sub collect_by_referent {
 According to the example above, this module does just this on import:
 
     use Attribute::Handlers;
-    
+
     sub UNIVERSAL::Load : ATTR(CODE) {
         goto &Disco::ATTRIBUTE;
     }
