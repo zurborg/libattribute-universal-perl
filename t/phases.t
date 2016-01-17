@@ -10,7 +10,7 @@ sub ATTRIBUTE {
 	my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 	if ($ENV{AUTHOR_TESTING} and $^V < 5.016) {
 		pass("skip phase $phase");
-		note(explain($referent));
+		diag("phase $phase: ".explain($referent));
 	} else {
 		my $should = $referent->();
 		is($should, $phase, "phase");
