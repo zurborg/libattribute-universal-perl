@@ -8,12 +8,13 @@ use Attribute::Universal Begin => 'BEGIN', Check => 'CHECK', Init => 'INIT', End
 
 sub ATTRIBUTE {
 	my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
-	if ($ENV{AUTHOR_TESTING} and $^V < 5.016) {
-		pass("skip phase $phase");
-		diag("phase $phase: ".explain($referent));
-	} else {
+	eval {
 		my $should = $referent->();
-		is($should, $phase, "phase");
+		is($should, $phase, $phase);
+	};
+	if ($@) {
+		fail($phase);
+		diag($@);
 	}
 }
 
