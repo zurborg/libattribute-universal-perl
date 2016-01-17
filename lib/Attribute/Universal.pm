@@ -10,6 +10,13 @@ use Attribute::Handlers 0.99;
 
 # VERSION
 
+my %sigil = (
+  HASH => '%',
+  ARRAY => '@',
+  SCALAR => '$',
+  CODE => '&',
+);
+
 sub import {
   my $class = shift;
   my $caller = scalar caller;
@@ -90,6 +97,30 @@ A lexical symbol cannot have a label.
 
 The reftype of the referent (CODE, HASH, ARRAY, SCALAR)
 
+=item * I<sigil>
+
+The sigil by the reftype (C<$>, C<@>, C<%>, c<&>)
+
+This keyword is available since v0.003
+
+=item * I<name>
+
+The name as sigil plus label (<$scalar>, C<@array>, C<%hash>, C<&code>)
+
+This keyword is available since v0.003
+
+=item * I<full_name>
+
+The full name as sigil plus package plus label (<$package::scalar>, C<@package::array>, C<%package::hash>, C<&package::code>)
+
+This keyword is available since v0.003
+
+=item * I<content>
+
+Like I<payload>, but as a forced ArrayRef.
+
+This keyword is available since v0.003
+
 =back
 
 =cut
@@ -97,19 +128,34 @@ The reftype of the referent (CODE, HASH, ARRAY, SCALAR)
 sub to_hash {
     shift if $_[0] eq __PACKAGE__;
     my ($package, $symbol, $referent, $attribute, $payload, $phase, $file, $line) = @_;
-    my $label = ref ($symbol) ? *{$symbol}{NAME} : undef;
-    my $type  = ref $referent;
+    my ($label, $type, $sigil, $name, $full_name, @content);
+    $label = ref ($symbol) ? *{$symbol}{NAME} : undef;
+    if (defined $referent) {
+      $type  = ref $referent;
+      if (defined $type) {
+        $sigil = $sigil{$type};
+        if (defined $sigil) {
+          $name  = $sigil.$label;
+          $full_name  = $sigil.$package.'::'.$label;
+        }
+      }
+    }
+    @content = ref $payload eq 'ARRAY' ? @$payload : ($payload);
     return {
       package   => $package,
       symbol    => $symbol,
       referent  => $referent,
       attribute => $attribute,
       payload   => $payload,
+      content   => \@content,
       phase     => $phase,
       file      => $file,
       line      => $line,
       label     => $label,
       type      => $type,
+      sigil     => $sigil,
+      name      => $name,
+      full_name => $full_name,
     };
 }
 
