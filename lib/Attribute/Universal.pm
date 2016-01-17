@@ -134,7 +134,7 @@ sub to_hash {
       $type  = ref $referent;
       if (defined $type) {
         $sigil = $sigil{$type};
-        if (defined $sigil) {
+        if (defined $sigil and defined $label) {
           $name  = $sigil.$label;
           $full_name  = $sigil.$package.'::'.$label;
         }
