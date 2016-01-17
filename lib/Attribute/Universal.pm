@@ -7,6 +7,7 @@ package Attribute::Universal;
 # ABSTRACT: Install L<attribute handlers|Attribute::Handlers> directly into UNIVERSAL namespace
 
 use Attribute::Handlers 0.99;
+use Scalar::Util qw(refaddr);
 
 # VERSION
 
@@ -157,6 +158,46 @@ sub to_hash {
       name      => $name,
       full_name => $full_name,
     };
+}
+
+=func collect_by_referent
+
+    my $collection;
+    sub ATTRIBUTE {
+        my $hash = Attribute::Universal::collect_by_referent($collection, @_);
+        # OR
+        my $hash = Attribute::Universal::to_hash(@_);
+        Attribute::Universal::collect_by_referent($collection, $hash);
+    }
+
+This helper collects all attributes by the L<refaddr|Scalar::Util/refaddr> of the referent and the attribute name:
+
+    {
+        refaddr($hash->{referent)} => {
+            $hash->{attribute} => $hash
+        }
+    }
+
+The major difference is that, the keyword I<payload> is stripped off, but I<content> is grown if the attribute occured more than once at a referent. So after all, I<content> is an ArrayRef holding all payloads together.
+
+This function is available since v0.003
+
+=cut
+
+sub collect_by_referent {
+  my $collection = shift;
+  my $hash = @_ > 1 ? to_hash(@_) : shift;
+  my $key = refaddr($hash->{referent});
+  my $attr = $hash->{attribute};
+  $collection->{$key} //= {};
+  if (exists $collection->{$key}->{$attr}) {
+    push @{ $collection->{$key}->{$attr}->{content} } =>
+      @{ $hash->{content} };
+  } else {
+    delete $hash->{payload};
+    $collection->{$key}->{$attr} = $hash;
+  }
+  return $hash;
 }
 
 1;
