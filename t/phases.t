@@ -8,8 +8,13 @@ use Attribute::Universal Begin => 'BEGIN', Check => 'CHECK', Init => 'INIT', End
 
 sub ATTRIBUTE {
 	my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
-	my $should = $referent->();
-	is($should, $phase, "phase");
+	if ($ENV{AUTHOR_TESTING} and $^V < 5.016) {
+		pass("skip phase $phase");
+		note(explain($referent));
+	} else {
+		my $should = $referent->();
+		is($should, $phase, "phase");
+	}
 }
 
 sub Early  : Begin { 'BEGIN' }
