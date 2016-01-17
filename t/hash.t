@@ -10,10 +10,8 @@ END {
 	is_deeply($Stack => [{
 		attribute => 'Test',
 		content => [ undef ],
-		file => 't/hash.t',
 		full_name => '&main::Code',
 		label => 'Code',
-		line => 80,
 		name => '&Code',
 		package => 'main',
 		payload => undef,
@@ -25,10 +23,8 @@ END {
 	},{
 		attribute => 'Test',
 		content => [ undef ],
-		file => 't/hash.t',
 		full_name => '$main::Scalar',
 		label => 'Scalar',
-		line => 81,
 		name => '$Scalar',
 		package => 'main',
 		payload => undef,
@@ -40,10 +36,8 @@ END {
 	},{
 		attribute => 'Test',
 		content => [ undef ],
-		file => 't/hash.t',
 		full_name => '@main::Array',
 		label => 'Array',
-		line => 82,
 		name => '@Array',
 		package => 'main',
 		payload => undef,
@@ -55,10 +49,8 @@ END {
 	},{
 		attribute => 'Test',
 		content => [ undef ],
-		file => 't/hash.t',
 		full_name => '%main::Hash',
 		label => 'Hash',
-		line => 83,
 		name => '%Hash',
 		package => 'main',
 		payload => undef,
@@ -74,6 +66,8 @@ use Attribute::Universal Test => 'END';
 
 sub ATTRIBUTE {
 	my $hash = Attribute::Universal::to_hash(@_);
+	delete $hash->{file};
+	delete $hash->{line};
 	push @$Stack => $hash;
 }
 
