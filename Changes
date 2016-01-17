@@ -1,4 +1,6 @@
 {{$NEXT}}
+ - add more keywords to to_hash and add a test for to_hash
+ - add function collect_by_referent
 
 0.002 2015-10-16
  - fix documentation
