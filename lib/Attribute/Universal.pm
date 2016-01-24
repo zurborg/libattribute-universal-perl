@@ -7,6 +7,7 @@ package Attribute::Universal;
 
 use Attribute::Handlers 0.99;
 use Scalar::Util qw(refaddr);
+use Carp qw(croak);
 
 # VERSION
 
@@ -30,7 +31,7 @@ sub import {
       }
     };
     ## use critic
-    die "cannot install universal attribute $name in $caller: $@" if $@;
+    croak "cannot install $target attribute $name in $caller: $@" if $@;
   }
 }
 
