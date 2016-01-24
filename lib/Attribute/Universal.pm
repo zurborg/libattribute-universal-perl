@@ -12,10 +12,10 @@ use Carp qw(croak);
 # VERSION
 
 my %sigil = (
-  HASH => '%',
-  ARRAY => '@',
-  SCALAR => '$',
-  CODE => '&',
+    SCALAR => '$',
+    ARRAY  => '@',
+    HASH   => '%',
+    CODE   => '&',
 );
 
 sub import {
@@ -164,31 +164,31 @@ sub to_hash {
     my ($label, $type, $sigil, $name, $full_name, @content);
     $label = ref ($symbol) ? *{$symbol}{NAME} : undef;
     if (defined $referent) {
-      $type  = ref $referent;
-      if (defined $type) {
-        $sigil = $sigil{$type};
-        if (defined $sigil and defined $label) {
-          $name  = $sigil.$label;
-          $full_name  = $sigil.$package.'::'.$label;
+        $type  = ref $referent;
+        if (defined $type) {
+            $sigil = $sigil{$type};
+            if (defined $sigil and defined $label) {
+                $name  = $sigil.$label;
+                $full_name  = $sigil.$package.'::'.$label;
+            }
         }
-      }
     }
     @content = ref $payload eq 'ARRAY' ? @$payload : ($payload);
     return {
-      package   => $package,
-      symbol    => $symbol,
-      referent  => $referent,
-      attribute => $attribute,
-      payload   => $payload,
-      content   => \@content,
-      phase     => $phase,
-      file      => $file,
-      line      => $line,
-      label     => $label,
-      type      => $type,
-      sigil     => $sigil,
-      name      => $name,
-      full_name => $full_name,
+        package   => $package,
+        symbol    => $symbol,
+        referent  => $referent,
+        attribute => $attribute,
+        payload   => $payload,
+        content   => \@content,
+        phase     => $phase,
+        file      => $file,
+        line      => $line,
+        label     => $label,
+        type      => $type,
+        sigil     => $sigil,
+        name      => $name,
+        full_name => $full_name,
     };
 }
 
@@ -217,19 +217,19 @@ This function is available since v0.003
 =cut
 
 sub collect_by_referent {
-  my $collection = shift;
-  my $hash = @_ > 1 ? to_hash(@_) : shift;
-  my $key = refaddr($hash->{referent});
-  my $attr = $hash->{attribute};
-  $collection->{$key} //= {};
-  if (exists $collection->{$key}->{$attr}) {
-    push @{ $collection->{$key}->{$attr}->{content} } =>
-      @{ $hash->{content} };
-  } else {
-    delete $hash->{payload};
-    $collection->{$key}->{$attr} = $hash;
-  }
-  return $hash;
+    my $collection = shift;
+    my $hash = @_ > 1 ? to_hash(@_) : shift;
+    my $key = refaddr($hash->{referent});
+    my $attr = $hash->{attribute};
+    $collection->{$key} //= {};
+    if (exists $collection->{$key}->{$attr}) {
+        push @{ $collection->{$key}->{$attr}->{content} } =>
+            @{ $hash->{content} };
+    } else {
+        delete $hash->{payload};
+        $collection->{$key}->{$attr} = $hash;
+    }
+    return $hash;
 }
 
 1;
