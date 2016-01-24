@@ -5,7 +5,7 @@ use Test::More tests => 4;
 END { done_testing }
 
 use Attribute::Universal
-#	Begin => 'BEGIN',
+	Begin => 'BEGIN',
 	Check => 'CHECK',
 	Init => 'INIT',
 	End => 'END';
@@ -22,7 +22,7 @@ sub ATTRIBUTE {
 	}
 }
 
-pass;#sub Early  : Begin { 'BEGIN' }
+sub Early  : Begin { 'BEGIN' }
 sub Normal : Check { 'CHECK' }
 sub Late   : Init  { 'INIT'  }
 sub Final  : End   { 'END'   }
