@@ -57,11 +57,8 @@ sub import_into {
     foreach my $name (keys %cfg) {
         my $cfg = uc($cfg{$name});
         ## no critic
-        eval qq{
-            sub $target::$name : ATTR($cfg) {
-                goto &${caller}::ATTRIBUTE;
-            }
-        };
+        eval sprintf 'sub %s::%s : ATTR(%s) { goto &%s::ATTRIBUTE }',
+        $target, $name, $cfg, $caller;
         ## use critic
         croak "cannot install $target attribute $name in $caller: $@" if $@;
     }
