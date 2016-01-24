@@ -19,20 +19,52 @@ my %sigil = (
 );
 
 sub import {
-  my $class = shift;
-  my $caller = scalar caller;
-  my %cfg = @_;
-  foreach my $name (keys %cfg) {
-    my $cfg = uc($cfg{$name});
-    ## no critic
-    eval qq{
-      sub UNIVERSAL::$name : ATTR($cfg) {
-        goto &${caller}::ATTRIBUTE;
-      }
-    };
-    ## use critic
-    croak "cannot install $target attribute $name in $caller: $@" if $@;
-  }
+    my ($class, %cfg) = @_;
+    @_ = ($class, 'UNIVERSAL', %cfg);
+    goto &import_into;
+}
+
+=func import_into
+
+Instead of installing an attribute in UNIVERSAL namespace (which I<may> pollute it) the attributes can also installed directory into a target namespace.
+
+    package Producer;
+
+    use Attribute::Universal;
+
+    sub import {
+        my $caller = scalar caller;
+        Attribute::Universal->import_into($caller, 'MyAttribute' => 'RAWDATA');
+    }
+
+    sub ATTRIBUTE {
+        ...
+    }
+
+    package Consumer;
+
+    use Producer;
+
+    sub Function : MyAttribute;
+
+=cut
+
+sub import_into {
+    my $class = shift;
+    my $target = shift;
+    my $caller = scalar caller;
+    my %cfg = @_;
+    foreach my $name (keys %cfg) {
+        my $cfg = uc($cfg{$name});
+        ## no critic
+        eval qq{
+            sub $target::$name : ATTR($cfg) {
+                goto &${caller}::ATTRIBUTE;
+            }
+        };
+        ## use critic
+        croak "cannot install $target attribute $name in $caller: $@" if $@;
+    }
 }
 
 =func to_hash
