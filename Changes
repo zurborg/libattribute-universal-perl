@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.003 2016-01-25
  - add more keywords to to_hash and add a test for to_hash
  - add function collect_by_referent
 
